@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF to Word Converter | Easy Tools</title>
+    <meta name="description" content="Convert your PDF files to editable Word documents for free. No registration required, easy to use.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#3B82F6',
+                        'primary-dark': '#2563EB',
+                        'secondary': '#6B7280',
+                        'light-bg': '#F9FAFB',
+                        'dark-text': '#1F2937'
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- FileSaver.js for downloading files -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+</head>
+<body class="bg-light-bg text-dark-text">
+    <!-- Navigation Bar -->
+    <nav class="bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <a href="index.html" class="text-primary text-2xl font-bold">Easy Tools</a>
+                    </div>
+                    <div class="hidden md:ml-6 md:flex md:space-x-8">
+                        <a href="index.html" class="border-transparent text-secondary hover:text-primary hover:border-primary inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Home
+                        </a>
+                        <a href="index.html#tools" class="border-transparent text-secondary hover:text-primary hover:border-primary inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            All Tools
+                        </a>
+                        <a href="index.html#about" class="border-transparent text-secondary hover:text-primary hover:border-primary inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            About Us
+                        </a>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <button id="loginBtn" class="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-md text-sm font-medium">
+                        Sign In / Register
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="py-12">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h1 class="text-3xl font-extrabold text-dark-text sm:text-4xl">
+                    PDF to Word Converter
+                </h1>
+                <p class="mt-3 max-w-2xl mx-auto text-xl text-secondary sm:mt-4">
+                    Convert your PDF documents to editable Word files for free
+                </p>
+            </div>
+
+            <!-- File Upload Section -->
+            <div class="mt-10 bg-white p-6 rounded-lg shadow-md">
+                <div id="upload-section" class="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-12">
+                    <div class="text-center">
+                        <i class="fas fa-file-pdf text-primary text-5xl mb-4"></i>
+                        <h2 class="text-xl font-medium text-dark-text mb-2">Upload your PDF file</h2>
+                        <p class="text-secondary text-sm mb-6">Maximum file size: 10 MB</p>
+                        
+                        <label for="pdf-file" class="bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-md text-sm font-medium cursor-pointer inline-block">
+                            Choose File
+                        </label>
+                        <input type="file" id="pdf-file" accept=".pdf" class="hidden" />
+                        
+                        <p class="text-xs text-gray-500 mt-4">
+                            By uploading a file, you agree to our <a href="#" class="text-primary hover:underline">Terms of Service</a>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Processing Section (Initially Hidden) -->
+                <div id="processing-section" class="hidden flex flex-col items-center justify-center p-12">
+                    <div class="text-center">
+                        <div class="mb-4">
+                            <svg class="animate-spin h-12 w-12 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        </div>
+                        <h2 class="text-xl font-medium text-dark-text mb-2">Converting your file...</h2>
+                        <p class="text-secondary text-sm">This may take a few moments</p>
+                    </div>
+                </div>
+
+                <!-- Result Section (Initially Hidden) -->
+                <div id="result-section" class="hidden flex flex-col items-center justify-center p-12">
+                    <div class="text-center">
+                        <div class="mb-4">
+                            <i class="fas fa-check-circle text-green-500 text-5xl"></i>
+                        </div>
+                        <h2 class="text-xl font-medium text-dark-text mb-2">Conversion Completed!</h2>
+                        <p class="text-secondary text-sm mb-6">Your file has been successfully converted</p>
+                        
+                        <button id="download-btn" class="bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-md text-sm font-medium mb-4">
+                            <i class="fas fa-download mr-2"></i> Download Word Document
+                        </button>
+                        
+                        <button id="convert-another" class="text-primary hover:text-primary-dark text-sm font-medium">
+                            Convert another file
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- How It Works Section -->
+            <div class="mt-16">
+                <h2 class="text-2xl font-bold text-dark-text text-center mb-8">How It Works</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="text-center">
+                        <div class="inline-flex items-center justify-center w-12 h-12 bg-primary rounded-full text-white text-xl font-bold mb-4">
+                            1
+                        </div>
+                        <h3 class="text-lg font-medium text-dark-text mb-2">Upload</h3>
+                        <p class="text-secondary">Select your PDF document from your device</p>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="inline-flex items-center justify-center w-12 h-12 bg-primary rounded-full text-white text-xl font-bold mb-4">
+                            2
+                        </div>
+                        <h3 class="text-lg font-medium text-dark-text mb-2">Convert</h3>
+                        <p class="text-secondary">Our system will process and convert your PDF</p>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="inline-flex items-center justify-center w-12 h-12 bg-primary rounded-full text-white text-xl font-bold mb-4">
+                            3
+                        </div>
+                        <h3 class="text-lg font-medium text-dark-text mb-2">Download</h3>
+                        <p class="text-secondary">Download your editable Word document</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Section -->
+            <div class="mt-16">
+                <h2 class="text-2xl font-bold text-dark-text text-center mb-8">Frequently Asked Questions</h2>
+                
+                <div class="space-y-6">
+                    <div class="bg-white p-6 rounded-lg shadow-sm">
+                        <h3 class="text-lg font-medium text-dark-text mb-2">Is this service really free?</h3>
+                        <p class="text-secondary">Yes, our PDF to Word converter is completely free to use with no hidden costs.</p>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-lg shadow-sm">
+                        <h3 class="text-lg font-medium text-dark-text mb-2">Is my data safe?</h3>
+                        <p class="text-secondary">We take your privacy seriously. All uploaded files are processed in your browser and are not stored on our servers.</p>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-lg shadow-sm">
+                        <h3 class="text-lg font-medium text-dark-text mb-2">What's the maximum file size?</h3>
+                        <p class="text-secondary">You can upload PDF files up to 10MB in size. For larger files, please contact us for a custom solution.</p>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-lg shadow-sm">
+                        <h3 class="text-lg font-medium text-dark-text mb-2">How accurate is the conversion?</h3>
+                        <p class="text-secondary">Our converter aims to maintain the original formatting as much as possible. However, complex layouts might have slight differences.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark-text mt-16">
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div class="xl:grid xl:grid-cols-3 xl:gap-8">
+                <div class="space-y-8 xl:col-span-1">
+                    <h3 class="text-xl font-bold text-white">Easy Tools</h3>
+                    <p class="text-gray-400 text-base">
+                        Providing various practical online tools to help you work more efficiently.
+                    </p>
+                    <div class="flex space-x-6">
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="mt-12 grid grid-cols-2 gap-8 xl:mt-0 xl:col-span-2">
+                    <div class="md:grid md:grid-cols-2 md:gap-8">
+                        <div>
+                            <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">Tool Categories</h3>
+                            <ul class="mt-4 space-y-4">
+                                <li>
+                                    <a href="index.html#tools" class="text-base text-gray-300 hover:text-white">
+                                        File Conversion
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="index.html#tools" class="text-base text-gray-300 hover:text-white">
+                                        Image Processing
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="index.html#tools" class="text-base text-gray-300 hover:text-white">
+                                        Text Tools
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="index.html#tools" class="text-base text-gray-300 hover:text-white">
+                                        Utility Tools
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="mt-12 md:mt-0">
+                            <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">Support</h3>
+                            <ul class="mt-4 space-y-4">
+                                <li>
+                                    <a href="#" class="text-base text-gray-300 hover:text-white">
+                                        Tutorials
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" class="text-base text-gray-300 hover:text-white">
+                                        FAQ
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" class="text-base text-gray-300 hover:text-white">
+                                        Contact Us
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="md:grid md:grid-cols-2 md:gap-8">
+                        <div>
+                            <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">Company</h3>
+                            <ul class="mt-4 space-y-4">
+                                <li>
+                                    <a href="#" class="text-base text-gray-300 hover:text-white">
+                                        About Us
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" class="text-base text-gray-300 hover:text-white">
+                                        Privacy Policy
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" class="text-base text-gray-300 hover:text-white">
+                                        Terms of Service
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-12 border-t border-gray-700 pt-8">
+                <p class="text-base text-gray-400 md:text-center">
+                    &copy; 2024 Easy Tools. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript for functionality -->
+    <script>
+        // Get elements
+        const pdfFileInput = document.getElementById('pdf-file');
+        const uploadSection = document.getElementById('upload-section');
+        const processingSection = document.getElementById('processing-section');
+        const resultSection = document.getElementById('result-section');
+        const downloadBtn = document.getElementById('download-btn');
+        const convertAnother = document.getElementById('convert-another');
+        const loginBtn = document.getElementById('loginBtn');
+        
+        // File content storage
+        let fileToDownload = null;
+        let originalFileName = '';
+        
+        // Add event listeners
+        pdfFileInput.addEventListener('change', handleFileSelect);
+        downloadBtn.addEventListener('click', downloadDocument);
+        convertAnother.addEventListener('click', resetConverter);
+        loginBtn.addEventListener('click', () => alert('Login functionality would go here.'));
+        
+        // Function to handle file selection
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            
+            if (!file) return;
+            
+            // Check file type
+            if (file.type !== 'application/pdf') {
+                alert('Please select a PDF file.');
+                return;
+            }
+            
+            // Check file size (max 10MB)
+            if (file.size > 10 * 1024 * 1024) {
+                alert('File size exceeds 10MB. Please select a smaller file.');
+                return;
+            }
+            
+            originalFileName = file.name.replace('.pdf', '');
+            
+            // Show processing section
+            uploadSection.classList.add('hidden');
+            processingSection.classList.remove('hidden');
+            
+            // Simulate processing (for demonstration)
+            setTimeout(() => {
+                // Store the file for later download
+                fileToDownload = file;
+                
+                // Show result section
+                processingSection.classList.add('hidden');
+                resultSection.classList.remove('hidden');
+            }, 2000); // Simulate 2 seconds of processing time
+        }
+        
+        // Function to download the document
+        function downloadDocument() {
+            if (!fileToDownload) {
+                alert('No document to download.');
+                return;
+            }
+            
+            // In a real implementation, this would be a converted file
+            // For demonstration, we're just creating a simple text file
+            const blob = new Blob([
+                "This is a simulated Word document converted from your PDF.\n\n" +
+                "In a real implementation, this would be an actual DOCX file with your PDF content.\n\n" +
+                "Filename: " + originalFileName + ".pdf\n" +
+                "File size: " + Math.round(fileToDownload.size / 1024) + " KB\n" +
+                "Date: " + new Date().toLocaleString()
+            ], {type: "text/plain;charset=utf-8"});
+            
+            saveAs(blob, originalFileName + ".docx");
+        }
+        
+        // Function to reset the converter
+        function resetConverter() {
+            // Clear the input
+            pdfFileInput.value = '';
+            fileToDownload = null;
+            originalFileName = '';
+            
+            // Show upload section, hide others
+            uploadSection.classList.remove('hidden');
+            processingSection.classList.add('hidden');
+            resultSection.classList.add('hidden');
+        }
+        
+        // Drag and drop functionality for the upload area
+        const dropArea = uploadSection;
+        
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, highlight, false);
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, unhighlight, false);
+        });
+        
+        function highlight() {
+            dropArea.classList.add('border-primary');
+        }
+        
+        function unhighlight() {
+            dropArea.classList.remove('border-primary');
+        }
+        
+        dropArea.addEventListener('drop', handleDrop, false);
+        
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            
+            if (files.length > 0) {
+                pdfFileInput.files = files;
+                handleFileSelect({ target: { files: files } });
+            }
+        }
+    </script>
+</body>
+</html>
